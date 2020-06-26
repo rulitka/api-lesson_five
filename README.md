@@ -1,10 +1,13 @@
-# Приложения для сбора статистики средней зарплате по выбранной вакансии с сайтов hh.ru superjob.ru за определенный промежуток времени
-![Build Status](https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ7d14iM-b0Uf7a29vqmFU7QR4eHGNiiL_2ew&usqp=CAU)
+<h1 align="center">
+  # Приложения для сбора статистики средней зарплате по выбранной вакансии с сайтов hh.ru superjob.ru за определенный промежуток времени
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ7d14iM-b0Uf7a29vqmFU7QR4eHGNiiL_2ew&usqp=CAU"> 
+</h1>
 
-Для размещения используются данные api-приложений:API HH и api.superjob.ru.
+Для сбора статистики используются данные api-приложений: [API HH](https://github.com/hhru/api) и [api.superjob.ru](https://api.superjob.ru/).
 ## Инсталляция
-Для начала нужно установить Python 3 с официального сайта Python. После этого нужно поочередно запустить файл fetch_spacex.py через коммандную строку, затем, когда в папке Images появятся фотографии, нужно запустить auto_post_api.py, для того, чтобы опубликовать фотографии в аккаунте инстаграм. Точно также нужно поступить с файлом fetch_hubble.py.
-
+Для начала нужно установить Python 3 с официального сайта Python. После этого в файле main.py нужно установить необходимые параметры, по которым будет собираться статистика.
+Находим строчку 
+ 
 Для того, чтобы все заработало, нужно установить все пакеты, представленные в файле requirements.txt.
 ```
 pip install -r requirements.txt
