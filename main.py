@@ -3,9 +3,8 @@ from terminaltables import SingleTable
 import requests
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv()    
 SECRET_KEY_SJ = os.getenv('SECRET_KEY')
-
 
 def predict_salary(min_salary, max_salary):
     average_salary = 0
@@ -20,106 +19,106 @@ def predict_salary(min_salary, max_salary):
 
 def predict_rub_salary_hh(profesion):
     vacancies = []
-    all_zp = 0
-    all_n = 0
+    total_salary = 0
+    total_number = 0
     page = 0
     pages = 1
     while page < pages:
         url = 'https://api.hh.ru/vacancies'
-        par = {'text': profesion, 'area': '4', 'period': '5',
+        user_request = {'text': profesion, 'area': '4', 'period': '5',
                'per_page': '10', 'page': page}
-        page_response = requests.get(url, params=par)
+        page_response = requests.get(url, params=user_request)
         pages = page_response.json()['pages']
         page += 1
-        page_data = page_response.json()
-        vacancies.append(page_data)
-        found_vac = vacancies[0]['found']
+        page_json = page_response.json()
+        vacancies.append(page_json)
+        total_vacancies = vacancies[0]['found']
     for vacancy in vacancies:
-        prep_list_of_vac = vacancy['items']
-        number_vac_with_sal = 0
-        sum_zp = 0
-        av_zp = 0
-        for prep_one_of_vac in prep_list_of_vac:
-            if prep_one_of_vac['salary'] is not None:
-                sal = prep_one_of_vac['salary']
-                if sal['currency'] == 'RUR':
-                    number_vac_with_sal += 1
-                    min_salary = sal['from']
-                    max_salary = sal['to']
-                    average_salary_hh = predict_salary(min_salary, max_salary)
-                    sum_zp += average_salary_hh
-                if sal['currency'] != 'RUR':
+        prepare_vacancies = vacancy['items']
+        number = 0
+        sum_salary = 0
+        average_salary = 0
+        for prepare_vacancy in prepare_vacancies:
+            if prepare_vacancy['salary'] is not None:
+                salary = prepare_vacancy['salary']
+                if salary['currency'] == 'RUR':
+                    number += 1
+                    min_salary = salary['from']
+                    max_salary = salary['to']
+                    average_salary = predict_salary(min_salary, max_salary)
+                    sum_salary += average_salary
+                else:
                     pass
-        all_zp += sum_zp
-        all_n += number_vac_with_sal
+        total_salary += sum_salary
+        total_number += number
     try:
-        av_zp = int(all_zp/all_n)
+        total_average_salary = int(total_salary/total_number)
     except ZeroDivisionError:
         pass
-    list_vac = [profesion, found_vac, all_n,  av_zp]
-    return list_vac
+    salary_response = [profesion, total_vacancies, total_number,  total_average_salary]
+    return salary_response
 
 
 def predict_rub_salary_sj(profesion):
     vacancies = []
-    all_zp = 0
-    all_n = 0
+    total_salary = 0
+    total_number = 0
     page = 0
     pages = 1
-    found_vac = 0
-    sum_zp = 0
-    av_zp = 0
+    total_vacancies = 0
+    sum_salary = 0
+    total_average_salary = 0
     while page < pages:
         url = 'https://api.superjob.ru/2.0/vacancies/'
         headers = {'X-Api-App-Id': SECRET_KEY_SJ}
-        param = {'keyword': profesion,
+        user_request = {'keyword': profesion,
                  'town': 4,
                  'period': 5,
                  'count': 10,
                  'page': page}
-        page_response = requests.get(url, headers=headers, params=param)
+        page_response = requests.get(url, headers=headers, params=user_request)
         page_response.raise_for_status()
-        pages_zoom = page_response.json()['more']
-        if pages_zoom is True:
+        more_vacancies = page_response.json()['more']
+        if more_vacancies is True:
             page += 1
             pages += 1
-        if pages_zoom is False:
+        if more_vacancies is False:
             break
-        page_data = page_response.json()
-        vacancies.append(page_data)
-        found_vac = vacancies[0]['total']
+        page_json = page_response.json()
+        vacancies.append(page_json)
+        total_vacancies = vacancies[0]['total']
     for vacancy in vacancies:
-        prep_list_of_vac = vacancy['objects']
-        number_vac_with_sal = 0
-        for prep_one_of_vac in prep_list_of_vac:
-            if prep_one_of_vac['currency'] == 'rub':
-                min_salary = prep_one_of_vac['payment_from']
-                max_salary = prep_one_of_vac['payment_to']
+        prepare_vacancies = vacancy['objects']
+        number = 0
+        for prepare_vacancy in prepare_vacancies:
+            if prepare_vacancy['currency'] == 'rub':
+                min_salary = prepare_vacancy['payment_from']
+                max_salary = prepare_vacancy['payment_to']
                 if min_salary or max_salary != 0:
-                    number_vac_with_sal += 1
-                average_salary_sj = predict_salary(min_salary, max_salary)
-                sum_zp += average_salary_sj
-            if prep_one_of_vac['currency'] != 'rub':
+                    number += 1
+                average_salary = predict_salary(min_salary, max_salary)
+                sum_salary += average_salary
+            else:
                 pass
-        all_zp += sum_zp
-        all_n += number_vac_with_sal
+        total_salary += sum_salary
+        total_number += number
     try:
-        av_zp = int(all_zp/all_n)
+        total_average_salary = int(total_salary/total_number)
     except ZeroDivisionError:
         pass
-    list_vac = [profesion, found_vac, all_n,  av_zp]
-    return list_vac
+    salary_response = [profesion, total_vacancies, total_number,  total_average_salary]
+    return salary_response
 
 
 def get_table(table, title):
-    TABLE_DATA = [['Язык программирования', 'Вакансий найдено',
+    table_template = [['Язык программирования', 'Вакансий найдено',
                    'Вакансий обработано', 'Средняя зарплата'], ]
     for line in table:
-        TABLE_DATA.append(line)
-        table_instance = SingleTable(TABLE_DATA, title)
+        table_template.append(line)
+        table_instance = SingleTable(table_template, title)
         table_instance.justify_columns[2] = 'right'
-    print(table_instance.table)
-    print()
+        table_result = table_instance.table
+    return table_result
 
 
 def main():
@@ -138,8 +137,10 @@ def main():
         sj_response = predict_rub_salary_sj(profesion)
         table_sj.append(sj_response)
         title_sj = 'SUPERJOB_MOSCOW'
-        get_table(table_hh, title_hh)
-        get_table(table_sj, title_sj)
+    print (get_table(table_hh, title_hh))
+    print()
+    print (get_table(table_sj, title_sj))
+    print()
 
 
 if __name__ == '__main__':
