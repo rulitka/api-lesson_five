@@ -37,7 +37,7 @@ def predict_rub_salary_hh(profesion):
         prepare_vacancies = vacancy['items']
         number = 0
         sum_salary = 0
-        average_salary = 0
+        total_average_salary = 0
         for prepare_vacancy in prepare_vacancies:
             if prepare_vacancy['salary'] is not None:
                 salary = prepare_vacancy['salary']
@@ -55,8 +55,8 @@ def predict_rub_salary_hh(profesion):
         total_average_salary = int(total_salary/total_number)
     except ZeroDivisionError:
         pass
-    salary_response = [profesion, total_vacancies, total_number,  total_average_salary]
-    return salary_response
+    hh_response = [profesion, total_vacancies, total_number,  total_average_salary]
+    return hh_response
 
 
 def predict_rub_salary_sj(profesion):
@@ -106,8 +106,8 @@ def predict_rub_salary_sj(profesion):
         total_average_salary = int(total_salary/total_number)
     except ZeroDivisionError:
         pass
-    salary_response = [profesion, total_vacancies, total_number,  total_average_salary]
-    return salary_response
+    sj_response = [profesion, total_vacancies, total_number,  total_average_salary]
+    return sj_response
 
 
 def get_table(table, title):
