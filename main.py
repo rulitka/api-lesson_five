@@ -143,7 +143,6 @@ def main():
         table_hh.append(hh_response)
         title_hh = 'HEADHUNTER_MOSCOW'
         sj_vacancies = get_vacancies_sj(profession)
-        print (sj_vacancies)
         sj_response = predict_rub_salary_sj(sj_vacancies, profession)
         table_sj.append(sj_response)
         title_sj = 'SUPERJOB_MOSCOW'
