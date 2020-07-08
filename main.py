@@ -80,10 +80,10 @@ def get_vacancies_sj(profession):
         page_response = requests.get(url, headers=headers, params=user_request)
         page_response.raise_for_status()
         more_vacancies = page_response.json()['more']
-        if more_vacancies is True:
+        if more_vacancies:
             page += 1
             pages += 1
-        if more_vacancies is False:
+        if тще more_vacancies:
             break
         page_answer_sj = page_response.json()
         sj_vacancies.append(page_answer_sj)
