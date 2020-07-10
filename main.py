@@ -2,24 +2,16 @@ from terminaltables import SingleTable
 import requests
 import os
 from dotenv import load_dotenv
-    
-SECRET_KEY_SJ = os.getenv('SECRET_KEY')
+
 
 def predict_salary(min_salary, max_salary):
-    if min_salary == None or max_salary == None:
-        if  min_salary == None:
-            average_salary =  max_salary*0.8
-        if  max_salary == None:
-            average_salary =  min_salary*1.2
-    if min_salary == 0 or max_salary == 0:
-        if min_salary == 0:
-            average_salary =  max_salary*0.8
-        if max_salary == 0:
-            average_salary =  min_salary*1.2
-    if min_salary != 0 and max_salary != 0 :
-            if min_salary != None and max_salary != None: 
-                average_salary = ((max_salary+min_salary)/2)
-    return average_salary
+    if min_salary == None or min_salary == 0:
+        average_salary =  max_salary*0.8
+    elif max_salary == None or max_salary == 0:
+        average_salary =  min_salary*1.2
+    else:  
+        average_salary = ((max_salary+min_salary)/2)
+    return average_salary  
 
 
 def get_vacancies_hh(profession):
@@ -66,6 +58,7 @@ def predict_rub_salary_hh(hh_vacancies, profession):
 
 
 def get_vacancies_sj(profession):
+    SECRET_KEY_SJ = os.getenv('SECRET_KEY')
     sj_vacancies = []
     page = 0
     pages = 1
@@ -83,7 +76,7 @@ def get_vacancies_sj(profession):
         if more_vacancies:
             page += 1
             pages += 1
-        if тще more_vacancies:
+        if not more_vacancies:
             break
         page_answer_sj = page_response.json()
         sj_vacancies.append(page_answer_sj)
@@ -91,19 +84,19 @@ def get_vacancies_sj(profession):
 
 def predict_rub_salary_sj(sj_vacancies, profession):
     total_vacancies = sj_vacancies[0]['total']
-    sum_salary = 0
-    total_average_salary = 0
     total_salary = 0
     total_number = 0
     for vacancy in sj_vacancies:
         prepare_vacancies = vacancy['objects']
         number = 0
+        sum_salary = 0
+        total_average_salary = 0
         for prepare_vacancy in prepare_vacancies:
             if prepare_vacancy['currency'] == 'rub':
                 min_salary = prepare_vacancy['payment_from']
                 max_salary = prepare_vacancy['payment_to']
                 if min_salary or max_salary != 0:
-                    number += 1
+                    number += 1 
                 average_salary = predict_salary(min_salary, max_salary)
                 sum_salary += average_salary
         total_salary += sum_salary
@@ -128,7 +121,7 @@ def get_table(table, title):
 
 
 def main():
-    load_dotenv()
+    load_dotenv()  
     table_hh = []
     table_sj = []
     professions = ("Java", "JavaScript",
@@ -143,8 +136,11 @@ def main():
         table_hh.append(hh_response)
         title_hh = 'HEADHUNTER_MOSCOW'
         sj_vacancies = get_vacancies_sj(profession)
-        sj_response = predict_rub_salary_sj(sj_vacancies, profession)
-        table_sj.append(sj_response)
+        try:
+            sj_response = predict_rub_salary_sj(sj_vacancies, profession)
+            table_sj.append(sj_response)
+        except (IndexError, ValueError):
+            pass
         title_sj = 'SUPERJOB_MOSCOW'
     print (get_table(table_hh, title_hh))
     print()
