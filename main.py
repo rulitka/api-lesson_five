@@ -20,7 +20,7 @@ def get_vacancies_hh(profession):
     pages = 1
     while page < pages:
         url = 'https://api.hh.ru/vacancies'
-        user_request = {'text': profession, 'area': '4', 'period': '5',
+        user_request = {'text': profession, 'area': '4', 'period': '30',
                'per_page': '10', 'page': page}
         page_response = requests.get(url, params=user_request)
         pages = page_response.json()['pages']
@@ -66,7 +66,7 @@ def get_vacancies_sj(profession, secret_key_sj):
         headers = {'X-Api-App-Id': secret_key_sj}
         user_request = {'keyword': profession,
                  'town': 4,
-                 'period': 5,
+                 'period': 30,
                  'count': 10,
                  'page': page}
         page_response = requests.get(url, headers=headers, params=user_request)
