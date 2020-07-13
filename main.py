@@ -124,12 +124,12 @@ def main():
     secret_key_sj = os.getenv('SECRET_KEY')
     table_hh = []
     table_sj = []
-    professions = ("Java", "JavaScript",
-                  "1С", "Python",
-                  "C", "C++",
-                  "C#", "Objective-C",
-                  "Perl", "Ruby",
-                  "PHP")
+    professions = ("C#", "Objective-C",
+                   "Ruby", "Java", "C", 
+                   "Typescript", "Scala",
+                   "Go", "Swift", 
+                   "C++", "PHP", 
+                   "JavaScript", "Python")
     for profession in professions:
         hh_vacancies = get_vacancies_hh(profession)
         hh_response = predict_rub_salary_hh(hh_vacancies, profession)
