@@ -57,7 +57,7 @@ def predict_rub_salary_hh(hh_vacancies, profession):
     return hh_response
 
 
-def get_vacancies_sj(profession, SECRET_KEY_SJ):
+def get_vacancies_sj(profession, secret_key_sj):
     sj_vacancies = []
     page = 0
     pages = 1
@@ -121,7 +121,7 @@ def get_table(table, title):
 
 def main():
     load_dotenv()
-    SECRET_KEY_SJ = os.getenv('SECRET_KEY')
+    secret_key_sj = os.getenv('SECRET_KEY')
     table_hh = []
     table_sj = []
     professions = ("Java", "JavaScript",
@@ -135,7 +135,7 @@ def main():
         hh_response = predict_rub_salary_hh(hh_vacancies, profession)
         table_hh.append(hh_response)
         title_hh = 'HEADHUNTER_MOSCOW'
-        sj_vacancies = get_vacancies_sj(profession, SECRET_KEY_SJ)
+        sj_vacancies = get_vacancies_sj(profession, secret_key_sj)
         try:
             sj_response = predict_rub_salary_sj(sj_vacancies, profession)
             table_sj.append(sj_response)
