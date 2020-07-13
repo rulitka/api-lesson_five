@@ -63,7 +63,7 @@ def get_vacancies_sj(profession, secret_key_sj):
     pages = 1
     while page < pages:
         url = 'https://api.superjob.ru/2.0/vacancies/'
-        headers = {'X-Api-App-Id': SECRET_KEY_SJ}
+        headers = {'X-Api-App-Id': secret_key_sj}
         user_request = {'keyword': profession,
                  'town': 4,
                  'period': 5,
